@@ -1,0 +1,10 @@
+# Dependencias que se instalarán dentro del contenedor
+node_modules
+
+# Archivos de entorno y secretos que no deben ir en la imagen
+.env
+
+# Metadatos de Git y Docker
+.git
+.gitignore
+Dockerfile
