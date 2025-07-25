@@ -1,0 +1,22 @@
+# cloudbuild.yaml
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$BUILD_ID', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$BUILD_ID']
+
+# Paso de despliegue a Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - '$_SERVICE_NAME'
+  - '--image=gcr.io/$PROJECT_ID/$_SERVICE_NAME:$BUILD_ID'
+  - '--region=$_REGION'
+  - '--platform=managed'
+  # Variables de entorno normales
+  # Todas las variables de entorno se pasan aquí.
+  # Los valores se proporcionan al ejecutar el comando 'gcloud builds submit'.
+  - '--set-env-vars=APP_NAME=$_SERVICE_NAME,INSTANCE_NAME=$_INSTANCE_NAME,REGION=$_REGION'
